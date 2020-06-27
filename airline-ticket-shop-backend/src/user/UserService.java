@@ -14,7 +14,7 @@ public class UserService {
 	public UserEntity login(UserEntity user) {
 		UserEntity user2 = UserRepository.getUserByUsername(user.getUsername());
 		
-		if(user.getPassword() == user2.getPassword() && user!=null )return user;
+		if(user2!=null && user.getPassword().equals(user2.getPassword()))return user;
 		return null;
 	}
 	

@@ -1,5 +1,6 @@
 package user;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -31,41 +32,56 @@ public class UserRepository {
 			e.printStackTrace();
 		}
 		
-		if(users == null) {
-			users = new ArrayList<UserEntity>();
-			users.add(new UserEntity(23,"perica","peric",UserRole.ADMIN,null));
-		}
+//		if(users == null) {
+//			users = new ArrayList<UserEntity>();
+//		}
 
 		return users;
 	}
 	
 
 	public static synchronized UserEntity getUserByUsername(String username) {
-		return null;
-	}
-	
-	public static synchronized UserEntity addUser(UserEntity user) {
 		List<UserEntity> users = null;
 		Gson gson = new Gson();
-		
 		try {
 			Reader reader = Files.newBufferedReader(Paths.get("users.json"));
 			users = Arrays.asList(gson.fromJson(reader, UserEntity[].class));
 			reader.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		if(users == null)users = new ArrayList<UserEntity>();
-		users.add(user);
+		UserEntity usr = null;
+		for(UserEntity ent : users) {
+			if(ent.getUsername().equals(username)) {
+				usr = ent;
+				break;
+			}
+		}
 		
+		return usr;
+	}
+	
+	public static synchronized UserEntity addUser(UserEntity user) {
+		List<UserEntity> users = null;
+		Gson gson = new Gson();
+		System.out.println(user.toString());
+		try {
+			Reader reader = Files.newBufferedReader(Paths.get("users.json"));
+			users = Arrays.asList(gson.fromJson(reader, UserEntity[].class));
+			reader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		List<UserEntity> newUsers = new ArrayList<UserEntity>(users);
+		newUsers.add(user);
+
 		try {
 			Writer writer = new FileWriter("users.json");
-			new Gson().toJson(users,writer);
+			new Gson().toJson(newUsers,writer);
 			writer.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		

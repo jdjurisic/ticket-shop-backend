@@ -62,6 +62,12 @@ public class UserEntity {
 	public void setBookings(ArrayList<Booking> bookings) {
 		this.bookings = bookings;
 	}
+
+	@Override
+	public String toString() {
+		return "UserEntity [id=" + id + ", username=" + username + ", password=" + password + ", role=" + role
+				+ ", bookings=" + bookings + "]";
+	}
     
     
 	
