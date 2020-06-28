@@ -31,10 +31,6 @@ public class UserRepository {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-//		if(users == null) {
-//			users = new ArrayList<UserEntity>();
-//		}
 
 		return users;
 	}
@@ -74,7 +70,14 @@ public class UserRepository {
 			e.printStackTrace();
 		}
 		
+		for(UserEntity entus : users) {
+			if(entus.getUsername().equals(user.getUsername())) {
+				return null;
+			}
+		}
+		
 		List<UserEntity> newUsers = new ArrayList<UserEntity>(users);
+		user.setId(users.size()+1);
 		newUsers.add(user);
 
 		try {
