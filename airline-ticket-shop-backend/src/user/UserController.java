@@ -43,13 +43,11 @@ public class UserController {
 			try {
 			    Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);
 			    String role = (String)claims.getBody().get("role");
-			    System.out.println(role);
-				return userService.getUsers();
+			    if(role.equals(UserRole.ADMIN.toString()))return userService.getUsers();
 			} catch (Exception e) {
 				System.out.println(e.getMessage());
 			}
 		}
-		
 		return null;
 	}
 	
@@ -57,8 +55,20 @@ public class UserController {
     @Path("/register")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public UserEntity register(UserEntity user) {
-        return userService.register(user);
+    public UserEntity register(@Context HttpServletRequest request,UserEntity user) {
+		String auth = request.getHeader("Authorization");
+		System.out.println("Authorization: " + auth);
+		if ((auth != null) && (auth.contains("Bearer "))) {
+			String jwt = auth.substring(auth.indexOf("Bearer ") + 7);
+			try {
+			    Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);
+			    String role = (String)claims.getBody().get("role");
+			    if(role.equals(UserRole.ADMIN.toString()))return userService.register(user);
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+			}
+	    }
+        return null;
     }
     
     @POST

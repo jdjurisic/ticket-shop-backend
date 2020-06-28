@@ -78,7 +78,9 @@ public class UserRepository {
 		
 		List<UserEntity> newUsers = new ArrayList<UserEntity>(users);
 		user.setId(users.size()+1);
-		newUsers.add(user);
+		if((user.getRole().equals(UserRole.ADMIN)||user.getRole().equals(UserRole.USER)) &&  !user.getUsername().equals("")) {
+			if(is_Valid_Password(user.getPassword()))newUsers.add(user);
+		}
 
 		try {
 			Writer writer = new FileWriter("users.json");
@@ -90,6 +92,39 @@ public class UserRepository {
 		
 		return user;
 	}
+	
+	// password validation
+	public static final int PASSWORD_LENGTH = 6;
+	public static boolean is_Valid_Password(String password) {
+
+        if (password.length() < PASSWORD_LENGTH) return false;
+
+        int charCount = 0;
+        int numCount = 0;
+        for (int i = 0; i < password.length(); i++) {
+
+            char ch = password.charAt(i);
+
+            if (is_Numeric(ch)) numCount++;
+            else if (is_Letter(ch)) charCount++;
+            else return false;
+        }
+
+        System.out.println(charCount >= 2 && numCount >= 2);
+        return (charCount >= 1 && numCount >= 1);
+    }
+
+    public static boolean is_Letter(char ch) {
+        ch = Character.toUpperCase(ch);
+        return (ch >= 'A' && ch <= 'Z');
+    }
+
+
+    public static boolean is_Numeric(char ch) {
+
+        return (ch >= '0' && ch <= '9');
+    }
+
 	
 	
 }
