@@ -17,6 +17,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import app.JwtKey;
+
 import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
 
 import io.jsonwebtoken.Claims;
@@ -41,7 +44,7 @@ public class UserController {
 		if ((auth != null) && (auth.contains("Bearer "))) {
 			String jwt = auth.substring(auth.indexOf("Bearer ") + 7);
 			try {
-			    Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);
+			    Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(JwtKey.getInstance().getKey()).build().parseClaimsJws(jwt);
 			    String role = (String)claims.getBody().get("role");
 			    if(role.equals(UserRole.ADMIN.toString()))return userService.getUsers();
 			} catch (Exception e) {
@@ -61,7 +64,7 @@ public class UserController {
 		if ((auth != null) && (auth.contains("Bearer "))) {
 			String jwt = auth.substring(auth.indexOf("Bearer ") + 7);
 			try {
-			    Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);
+			    Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(JwtKey.getInstance().getKey()).build().parseClaimsJws(jwt);
 			    String role = (String)claims.getBody().get("role");
 			    if(role.equals(UserRole.ADMIN.toString()))return userService.register(user);
 			} catch (Exception e) {
@@ -81,12 +84,10 @@ public class UserController {
             Map<String, Object> claims = new HashMap<>();
             claims.put("user", user.getUsername());
             claims.put("role", user.getRole().toString());
-    		String jws = Jwts.builder().setSubject(user.getUsername()).setClaims(claims).setIssuedAt(new Date()).signWith(key).compact();
+    		String jws = Jwts.builder().setSubject(user.getUsername()).setClaims(claims).setIssuedAt(new Date()).signWith(JwtKey.getInstance().getKey()).compact();
             return Response.ok().entity(user).header(AUTHORIZATION, "Bearer " + jws).build();
     	} else return Response.status(Response.Status.UNAUTHORIZED).entity(false).build();
     	
     }
-    
-	static Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 	
 }
