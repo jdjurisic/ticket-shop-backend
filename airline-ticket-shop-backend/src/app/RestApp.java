@@ -9,6 +9,9 @@ public class RestApp extends ResourceConfig {
 
 	public RestApp() {
 		packages("user",
-				"bookings");
+				"bookings",
+				"flight",
+				"ticket",
+				"company");
 	}
 }
