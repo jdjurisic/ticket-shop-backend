@@ -1,7 +1,7 @@
 package bookings;
 
 import flight.Flight;
-import ticket.Ticket;
+import flight.Ticket;
 import user.UserEntity;
 
 public class Booking {

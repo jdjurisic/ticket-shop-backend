@@ -1,4 +1,4 @@
-package ticket;
+package flight;
 
 import java.util.Date;
 
@@ -9,10 +9,22 @@ public class Ticket {
 	private Date departureDate;
 	private Date returnDate;
 	private int flightId;
+	private int count;
 	
 	public Ticket() {}
 
-	public Ticket(int ticketId, String company, boolean oneway, Date departureDate, Date returnDate, int flightId) {
+
+
+	@Override
+	public String toString() {
+		return "Ticket [ticketId=" + ticketId + ", company=" + company + ", oneway=" + oneway + ", departureDate="
+				+ departureDate + ", returnDate=" + returnDate + ", flightId=" + flightId + ", count=" + count + "]";
+	}
+
+
+
+	public Ticket(int ticketId, String company, boolean oneway, Date departureDate, Date returnDate, int flightId,
+			int count) {
 		super();
 		this.ticketId = ticketId;
 		this.company = company;
@@ -20,13 +32,10 @@ public class Ticket {
 		this.departureDate = departureDate;
 		this.returnDate = returnDate;
 		this.flightId = flightId;
+		this.count = count;
 	}
 
-	@Override
-	public String toString() {
-		return "Ticket [ticketId=" + ticketId + ", company=" + company + ", oneway=" + oneway + ", departureDate="
-				+ departureDate + ", returnDate=" + returnDate + ", flightId=" + flightId + "]";
-	}
+
 
 	public int getTicketId() {
 		return ticketId;
@@ -75,6 +84,15 @@ public class Ticket {
 	public void setFlightId(int flightId) {
 		this.flightId = flightId;
 	}
+
+	public int getCount() {
+		return count;
+	}
+
+	public void setCount(int count) {
+		this.count = count;
+	}
+	
 	
 	
 }

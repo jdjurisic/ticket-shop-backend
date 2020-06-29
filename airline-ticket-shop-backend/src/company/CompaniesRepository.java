@@ -21,10 +21,8 @@ public class CompaniesRepository {
 			cmp = Arrays.asList(gson.fromJson(reader, Company[].class));
 			reader.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-System.out.println(cmp.toString());
 		return cmp;
 		
 	}

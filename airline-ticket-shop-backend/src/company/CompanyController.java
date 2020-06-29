@@ -37,8 +37,7 @@ public class CompanyController {
 			String jwt = auth.substring(auth.indexOf("Bearer ") + 7);
 			try {
 			    Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(JwtKey.getInstance().getKey()).build().parseClaimsJws(jwt);
-			    String role = (String)claims.getBody().get("role");
-			    if(role.equals(UserRole.ADMIN.toString()))return companiesService.getCompanies();
+			    return companiesService.getCompanies();
 			} catch (Exception e) {
 				System.out.println(e.getMessage());
 			}
