@@ -52,6 +52,8 @@ public class FlightsRepository {
 		for(Flight f : flg) {
 			if(f.getTickets() != null) {
 				for(Ticket t : f.getTickets()) {
+					t.setDepCity(f.getOrigin());
+					t.setDestCity(f.getDestination());
 					tickets.add(t);
 				}
 			}
@@ -84,6 +86,10 @@ public class FlightsRepository {
 		for(Flight flig : flg) {
 			if(flig.getId() == t.getFlightId()) {
 				if(flig.getTickets() == null)flig.setTickets(new ArrayList<Ticket>());
+				t.setTicketId(flig.getTickets().size()+1);
+				t.setDestCity(flig.getDestination());
+				t.setDepCity(flig.getOrigin());
+				if(t.isOneway())t.setReturnDate(null);
 				flig.getTickets().add(t);
 				try {
 					Writer writer = new FileWriter("flights.json");

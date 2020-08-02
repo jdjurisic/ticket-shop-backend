@@ -18,6 +18,7 @@ public class RestApp extends ResourceConfig {
 				"flight",
 				"ticket",
 				"company");
+		
 	}
 	
 	//TODO reserveTicket|companyTickets,deleteCmp,editCmp,AddCmp,allReservations,DeleteReservation

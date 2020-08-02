@@ -15,5 +15,6 @@
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
 	<classpathentry kind="lib" path="C:/Users/Jovica/Desktop/gson-2.8.6.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Jovica/Desktop/cors-filter-2.5.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Jovica/Desktop/resteasy-jaxrs-4.0.0.Beta5.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

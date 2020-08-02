@@ -2,14 +2,20 @@ package flight;
 
 import java.util.Date;
 
+import javax.json.bind.annotation.JsonbDateFormat;
+
 public class Ticket {
 	private int ticketId;
 	private String company;
 	private boolean oneway;
+	@JsonbDateFormat(JsonbDateFormat.TIME_IN_MILLIS)
 	private Date departureDate;
+	@JsonbDateFormat(JsonbDateFormat.TIME_IN_MILLIS)
 	private Date returnDate;
 	private int flightId;
 	private int count;
+	private String destCity;
+	private String depCity;
 	
 	public Ticket() {}
 
@@ -91,6 +97,30 @@ public class Ticket {
 
 	public void setCount(int count) {
 		this.count = count;
+	}
+
+
+
+	public String getDestCity() {
+		return destCity;
+	}
+
+
+
+	public void setDestCity(String destCity) {
+		this.destCity = destCity;
+	}
+
+
+
+	public String getDepCity() {
+		return depCity;
+	}
+
+
+
+	public void setDepCity(String depCity) {
+		this.depCity = depCity;
 	}
 	
 	
