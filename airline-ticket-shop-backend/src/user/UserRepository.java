@@ -15,6 +15,8 @@ import java.util.List;
 import com.google.gson.Gson;
 
 import bookings.Booking;
+import flight.FlightsRepository;
+import flight.Ticket;
 
 public class UserRepository {
 
@@ -78,6 +80,9 @@ public class UserRepository {
 		
 		List<UserEntity> newUsers = new ArrayList<UserEntity>(users);
 		user.setId(users.size()+1);
+		if(user.getRole().equals(UserRole.USER)) {
+			user.setBookings(new ArrayList<Booking>());
+		}
 		if((user.getRole().equals(UserRole.ADMIN)||user.getRole().equals(UserRole.USER)) &&  !user.getUsername().equals("")) {
 			if(is_Valid_Password(user.getPassword()))newUsers.add(user);
 		}
@@ -124,7 +129,44 @@ public class UserRepository {
 
         return (ch >= '0' && ch <= '9');
     }
-
+    
+    // password validation above 
+    
+	public static boolean reserve(String username, Ticket tick) {
+		List<UserEntity> users = null;
+		Gson gson = new Gson();
+		try {
+			Reader reader = Files.newBufferedReader(Paths.get("users.json"));
+			users = Arrays.asList(gson.fromJson(reader, UserEntity[].class));
+			reader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		UserEntity usr = null;
+		for(UserEntity ent : users) {
+			if(ent.getUsername().equals(username)) {
+				usr = ent;
+				break;
+			}
+		}
 	
+		if(tick.getCount()-1 >= 0) {
+			tick.setCount(tick.getCount()-1);
+			FlightsRepository.editTicket(tick);
+		}else return false;
+		
+		usr.getBookings().add(new Booking(usr.getBookings().size()+1,true,tick));
+		
+		try {
+			Writer writer = new FileWriter("users.json");
+			new Gson().toJson(users,writer);
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return true;
+	}
 	
 }

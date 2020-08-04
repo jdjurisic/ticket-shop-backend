@@ -13,12 +13,15 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import app.JwtKey;
+import bookings.Booking;
+import flight.Ticket;
 
 import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
 
@@ -88,6 +91,30 @@ public class UserController {
             return Response.ok().entity(user).header(AUTHORIZATION, "Bearer " + jws).build();
     	} else return Response.status(Response.Status.UNAUTHORIZED).entity(false).build();
     	
+    }
+    
+    @POST
+    @Path("/reservations/{username}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response reservations(@Context HttpServletRequest request,Ticket ticket,@PathParam("username")String username) {
+    	String auth = request.getHeader("Authorization");
+		System.out.println("Authorization: " + auth);
+		if ((auth != null) && (auth.contains("Bearer "))) {
+			String jwt = auth.substring(auth.indexOf("Bearer ") + 7);
+			try {
+			    Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(JwtKey.getInstance().getKey()).build().parseClaimsJws(jwt);
+			    String role = (String)claims.getBody().get("role");
+			    if(role.equals(UserRole.USER.toString())) {
+			    	System.out.println(ticket.toString());
+					boolean success = userService.reserve(username,ticket);
+					if(success)return Response.ok().build();
+			    }
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+			}
+    }
+    	return Response.serverError().build();
     }
 	
 }

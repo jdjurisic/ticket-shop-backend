@@ -7,32 +7,21 @@ import user.UserEntity;
 public class Booking {
 	private int bookingId;
 	private boolean isAvailable;
-	private int flightId;
-	private int ticketId;
-	private int userId;
+	private Ticket ticket;
 	
 	public Booking() {}
 
+	@Override
+	public String toString() {
+		return "Booking [bookingId=" + bookingId + ", isAvailable=" + isAvailable + ", ticket=" + ticket + "]";
+	}
 
-
-	public Booking(int bookingId, boolean isAvailable, int flightId, int ticketId, int userId) {
+	public Booking(int bookingId, boolean isAvailable, Ticket ticket) {
 		super();
 		this.bookingId = bookingId;
 		this.isAvailable = isAvailable;
-		this.flightId = flightId;
-		this.ticketId = ticketId;
-		this.userId = userId;
+		this.ticket = ticket;
 	}
-
-
-
-	@Override
-	public String toString() {
-		return "Booking [bookingId=" + bookingId + ", isAvailable=" + isAvailable + ", flightId=" + flightId
-				+ ", ticketId=" + ticketId + ", userId=" + userId + "]";
-	}
-
-
 
 	public int getBookingId() {
 		return bookingId;
@@ -50,41 +39,15 @@ public class Booking {
 		this.isAvailable = isAvailable;
 	}
 
-
-
-	public int getFlightId() {
-		return flightId;
+	public Ticket getTicket() {
+		return ticket;
 	}
 
-
-
-	public void setFlightId(int flightId) {
-		this.flightId = flightId;
+	public void setTicket(Ticket ticket) {
+		this.ticket = ticket;
 	}
 
-
-
-	public int getTicketId() {
-		return ticketId;
-	}
-
-
-
-	public void setTicketId(int ticketId) {
-		this.ticketId = ticketId;
-	}
-
-
-
-	public int getUserId() {
-		return userId;
-	}
-
-
-
-	public void setUserId(int userId) {
-		this.userId = userId;
-	}
+	
 
 
 
