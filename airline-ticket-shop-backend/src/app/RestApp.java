@@ -21,6 +21,6 @@ public class RestApp extends ResourceConfig {
 		
 	}
 	
-	//TODO companyTickets,deleteCmp,editCmp,AddCmp,allReservations,DeleteReservation
+	//TODO deleteCmp,editCmp,AddCmp,allReservations,DeleteReservation
 	//DONE getTickets,newTicket,deleteTicket,editTicket,reserveTicket
-}
+}	// done back needs front companyTickets
