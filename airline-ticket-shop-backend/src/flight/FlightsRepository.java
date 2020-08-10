@@ -12,6 +12,11 @@ import java.util.List;
 
 import com.google.gson.Gson;
 
+import bookings.Booking;
+import user.UserEntity;
+import user.UserRepository;
+import user.UserRole;
+
 public class FlightsRepository {
 
 	public static synchronized List<Flight> getFlights() {
@@ -52,9 +57,12 @@ public class FlightsRepository {
 		for(Flight f : flg) {
 			if(f.getTickets() != null) {
 				for(Ticket t : f.getTickets()) {
-					t.setDepCity(f.getOrigin());
-					t.setDestCity(f.getDestination());
-					tickets.add(t);
+					if(t.getCount() != 0) {
+						t.setDepCity(f.getOrigin());
+						t.setDestCity(f.getDestination());
+						tickets.add(t);
+					}
+
 				}
 			}
 
@@ -171,6 +179,7 @@ public class FlightsRepository {
 						tck.setDepartureDate(t.getDepartureDate());
 						tck.setReturnDate(t.getReturnDate());
 						tck.setOneway(t.isOneway());
+						if(t.isOneway())tck.setReturnDate(null);
 						try {
 							Writer writer = new FileWriter("flights.json");
 							new Gson().toJson(flg,writer);
@@ -178,6 +187,29 @@ public class FlightsRepository {
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
+				// change reservations
+						List<UserEntity> users =  UserRepository.getUsers();
+						for(UserEntity usr : users) {
+							if(usr.getRole().equals(UserRole.USER)) {
+								if(usr.getBookings() != null) {
+									for(Booking booking : usr.getBookings()) {
+										if(booking.getTicket().getTicketId() == t.getTicketId() && 
+												booking.getTicket().getFlightId() == t.getFlightId()){
+													booking.setTicket(t);
+												}
+									}
+								}
+							}
+						}
+						try {
+							Writer writer = new FileWriter("users.json");
+							new Gson().toJson(users,writer);
+							writer.close();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						
+						
 						return true;
 					}
 				}
@@ -185,6 +217,37 @@ public class FlightsRepository {
 		}
 		
 		return false;
+	}
+
+	public static Ticket getTicketById(int fid,int ticketId) {
+		List<Flight> flg = null;
+		Gson gson = new Gson();
+		
+		Reader reader;
+		try {
+			reader = new FileReader("flights.json");
+			flg = Arrays.asList(gson.fromJson(reader, Flight[].class));
+			reader.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		Ticket t = null;
+		for(Flight f : flg) {
+			if(f.getTickets() != null) {
+				if(f.getId() == fid) {
+					for(Ticket tick : f.getTickets()) {
+						if(tick.getTicketId() == ticketId) {
+							t = tick;
+						}
+					}
+				}
+			}
+		}
+		
+		return t;
 	}
 	
 }

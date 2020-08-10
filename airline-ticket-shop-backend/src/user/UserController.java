@@ -108,6 +108,7 @@ public class UserController {
 			    if(role.equals(UserRole.USER.toString())) {
 			    	System.out.println(ticket.toString());
 					boolean success = userService.reserve(username,ticket);
+					System.out.println(success);
 					if(success)return Response.ok().build();
 			    }
 			} catch (Exception e) {

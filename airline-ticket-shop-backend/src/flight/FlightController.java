@@ -11,6 +11,7 @@ import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -99,6 +100,15 @@ public class FlightController {
 		if(success)return Response.ok().build();
 		return Response.notAcceptable(null).build();
 	}
+	
+	@GET
+	@Path("/tickets/{id}/{ticketId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Ticket getTicketById(@PathParam("id")int fid, @PathParam("ticketId")int ticketId) {
+		return flightsService.getTicketById(fid,ticketId);
+	}
+	
 	
 	
 }

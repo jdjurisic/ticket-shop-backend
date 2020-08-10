@@ -22,5 +22,9 @@ public class FlightsService {
 	public boolean editTicket(Ticket t) {
 		return FlightsRepository.editTicket(t);
 	}
+
+	public Ticket getTicketById(int fid,int ticketId) {
+		return FlightsRepository.getTicketById(fid,ticketId);
+	}
 	
 }
