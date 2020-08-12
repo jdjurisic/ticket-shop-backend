@@ -142,12 +142,36 @@ public class FlightsRepository {
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
+						
+						// clear reservations
+						List<UserEntity> users =  UserRepository.getUsers();
+						List<UserEntity> usr2 = new ArrayList<UserEntity>(users);
+						
+						for(UserEntity usr : usr2) {
+							if(usr.getRole().equals(UserRole.USER)) {
+
+									for(Booking booking : usr.getBookings()) {
+										if(booking.getTicket().getTicketId() == t.getTicketId() && 
+												booking.getTicket().getFlightId() == t.getFlightId()){
+											usr.getBookings().remove(booking);
+											try {
+												Writer writer = new FileWriter("users.json");
+												new Gson().toJson(usr2,writer);
+												writer.close();
+											} catch (IOException e) {
+												e.printStackTrace();
+											}
+												}
+									}
+
+							}
+						}
+						// reservations
 						return true;
 					}
 				}
 			}
 		}
-		
 		
 		return false;
 	}
@@ -219,7 +243,7 @@ public class FlightsRepository {
 		return false;
 	}
 
-	public static Ticket getTicketById(int fid,int ticketId) {
+	public static synchronized Ticket getTicketById(int fid,int ticketId) {
 		List<Flight> flg = null;
 		Gson gson = new Gson();
 		

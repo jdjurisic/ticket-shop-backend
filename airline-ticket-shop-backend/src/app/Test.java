@@ -30,7 +30,10 @@ public class Test {
 		t11.setFlightId(0);
 		t11.setOneway(false);
 		t11.setTicketId(0);
+		t11.setDestCity(f1.getDestination());
+		t11.setDepCity(f1.getOrigin());
 		t1.add(t11);
+		
 		
 		Ticket t12 = new Ticket();
 		t12.setCompany("Swiss Air");
@@ -39,7 +42,9 @@ public class Test {
 		t12.setReturnDate(new Date(2020,7,25,9,0,0));
 		t12.setFlightId(0);
 		t12.setOneway(false);
-		t12.setTicketId(0);
+		t12.setTicketId(1);
+		t12.setDestCity(f1.getDestination());
+		t12.setDepCity(f1.getOrigin());
 		t1.add(t12);
 		
 		f1.setTickets(t1);
@@ -49,7 +54,7 @@ public class Test {
 		Flight f2 = new Flight();
 		f2.setDestination("Tungusia");
 		f2.setOrigin("Paris");
-		f2.setId(0);
+		f2.setId(1);
 		ArrayList<Ticket> t2 = new ArrayList<>();
 		
 		Ticket t21 = new Ticket();
@@ -60,6 +65,8 @@ public class Test {
 		t21.setFlightId(0);
 		t21.setOneway(false);
 		t21.setTicketId(0);
+		t21.setDestCity(f2.getDestination());
+		t21.setDepCity(f2.getOrigin());
 		t2.add(t21);
 		
 		Ticket t22 = new Ticket();
@@ -69,7 +76,9 @@ public class Test {
 		t22.setReturnDate(new Date(2020,7,25,9,0,0));
 		t22.setFlightId(0);
 		t22.setOneway(false);
-		t22.setTicketId(0);
+		t22.setTicketId(1);
+		t22.setDestCity(f2.getDestination());
+		t22.setDepCity(f2.getOrigin());
 		t2.add(t22);
 		
 		f2.setTickets(t2);

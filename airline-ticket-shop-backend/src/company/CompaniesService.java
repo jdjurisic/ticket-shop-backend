@@ -6,4 +6,9 @@ public class CompaniesService {
 	public List<Company> getCompanies(){
 		return CompaniesRepository.getCompanies();
 	}
+
+	public boolean deleteCompany(String name) {
+		return CompaniesRepository.deleteCompany(name);
+		
+	}
 }

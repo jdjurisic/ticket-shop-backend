@@ -132,7 +132,7 @@ public class UserRepository {
     
     // password validation above 
     
-	public static boolean reserve(String username, Ticket tick) {
+	public static synchronized boolean reserve(String username, Ticket tick) {
 		List<UserEntity> users = null;
 		Gson gson = new Gson();
 		try {

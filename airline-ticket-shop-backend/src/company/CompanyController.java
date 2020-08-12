@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -63,6 +65,18 @@ public class CompanyController {
 		if(tickets.size() > 0)return Response.ok().entity(filtered).build();
 		else return Response.serverError().build();
 	}
+	
+	@DELETE
+	@Path("/{name}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response deleteCompany(@Context HttpServletRequest request,@PathParam("name")String name) {
+		boolean succ;
+		succ = companiesService.deleteCompany(name);
+		System.out.println(name);
+		if(succ)	return Response.ok().build();
+		else return Response.serverError().build();
+	}
+	
 	
 	
 }
