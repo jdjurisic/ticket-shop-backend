@@ -171,7 +171,7 @@ public class UserRepository {
 	}
 
 
-	public static List<Booking> getBookings(String username) {
+	public static synchronized List<Booking> getBookings(String username) {
 		List<UserEntity> users = null;
 		Gson gson = new Gson();
 		try {
@@ -194,7 +194,7 @@ public class UserRepository {
 	}
 
 
-	public static boolean deleteReservation(String username, int bookingId) {
+	public static synchronized boolean deleteReservation(String username, int bookingId) {
 		List<UserEntity> users = null;
 		Gson gson = new Gson();
 		boolean deleted = false;

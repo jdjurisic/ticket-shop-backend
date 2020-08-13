@@ -71,7 +71,7 @@ public class CompanyController {
 	@DELETE
 	@Path("/{name}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response deleteCompany(@Context HttpServletRequest request,@PathParam("name")String name) {
+	public boolean deleteCompany(@Context HttpServletRequest request,@PathParam("name")String name) {
 		String auth = request.getHeader("Authorization");
 		System.out.println("Authorization: " + auth);
 		if ((auth != null) && (auth.contains("Bearer "))) {
@@ -83,13 +83,13 @@ public class CompanyController {
 					boolean succ;
 					succ = companiesService.deleteCompany(name);
 					System.out.println(name);
-					if(succ)	return Response.ok().build();
+					if(succ)return true;
 			    }
 			} catch (Exception e) {
 				System.out.println(e.getMessage());
 			}
 		}
-		return Response.serverError().build();
+		return false;
 	}
 	
 	@PUT
