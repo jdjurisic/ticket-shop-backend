@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -71,11 +72,24 @@ public class CompanyController {
 	@Path("/{name}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response deleteCompany(@Context HttpServletRequest request,@PathParam("name")String name) {
-		boolean succ;
-		succ = companiesService.deleteCompany(name);
-		System.out.println(name);
-		if(succ)	return Response.ok().build();
-		else return Response.serverError().build();
+		String auth = request.getHeader("Authorization");
+		System.out.println("Authorization: " + auth);
+		if ((auth != null) && (auth.contains("Bearer "))) {
+			String jwt = auth.substring(auth.indexOf("Bearer ") + 7);
+			try {
+			    Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(JwtKey.getInstance().getKey()).build().parseClaimsJws(jwt);
+			    String role = (String)claims.getBody().get("role");
+			    if(role.equals(UserRole.ADMIN.toString())) {
+					boolean succ;
+					succ = companiesService.deleteCompany(name);
+					System.out.println(name);
+					if(succ)	return Response.ok().build();
+			    }
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+			}
+		}
+		return Response.serverError().build();
 	}
 	
 	@PUT
@@ -83,13 +97,46 @@ public class CompanyController {
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response editCompany(@Context HttpServletRequest request,@PathParam("oldName")String oldName,String newname) {
-		boolean succ = false;
-		succ = companiesService.editCompany(oldName,newname);
-		if(succ)return Response.ok().build();
+		String auth = request.getHeader("Authorization");
+		System.out.println("Authorization: " + auth);
+		if ((auth != null) && (auth.contains("Bearer "))) {
+			String jwt = auth.substring(auth.indexOf("Bearer ") + 7);
+			try {
+			    Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(JwtKey.getInstance().getKey()).build().parseClaimsJws(jwt);
+			    String role = (String)claims.getBody().get("role");
+			    if(role.equals(UserRole.ADMIN.toString())) {
+					boolean succ = false;
+					succ = companiesService.editCompany(oldName,newname);
+					if(succ)return Response.ok().build();
+			    }
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+			}
+		}
 		return Response.serverError().build();
-		
-
 	}
 	
+	@POST
+	@Consumes(MediaType.TEXT_PLAIN)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response addCompany(@Context HttpServletRequest request,String name) {
+		String auth = request.getHeader("Authorization");
+		System.out.println("Authorization: " + auth);
+		if ((auth != null) && (auth.contains("Bearer "))) {
+			String jwt = auth.substring(auth.indexOf("Bearer ") + 7);
+			try {
+			    Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(JwtKey.getInstance().getKey()).build().parseClaimsJws(jwt);
+			    String role = (String)claims.getBody().get("role");
+			    if(role.equals(UserRole.ADMIN.toString())) {
+			    	boolean succ = false;
+					succ = companiesService.addCompany(name);
+					if(succ) Response.ok().build();
+			    }
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+			}
+		}
+		return Response.serverError().build();
+	}
 	
 }

@@ -23,5 +23,13 @@ public class UserService {
 	public boolean reserve(String username, Ticket tick) {
 		return UserRepository.reserve(username,tick);
 	}
+
+	public List<Booking> getBookings(String username) {
+		return UserRepository.getBookings(username);
+	}
+
+	public boolean deleteReservation(String username, int bookingId) {
+		return UserRepository.deleteReservation(username,bookingId);
+	}
 	
 }

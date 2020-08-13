@@ -166,6 +166,44 @@ public class CompaniesRepository {
 		
 		return done;
 	}
+
+	public static boolean addCompany(String name) {
+		boolean done = false;
+		
+		List<Company> cmpLoaded = null;
+		Gson gson = new Gson();
+		int maxId = -1;
+		
+		try {
+			Reader reader = new FileReader("companies.json");
+			cmpLoaded = Arrays.asList(gson.fromJson(reader, Company[].class));
+			reader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		List<Company> cmp = new ArrayList<Company>(cmpLoaded);
+		for(Company c:cmp) {
+			if(c.getName().equals(name))return false;
+			if(c.getCompanyId()>maxId) {
+				maxId = c.getCompanyId();
+			}
+		}
+		
+		cmp.add(new Company(maxId+1,name));
+		done = true;
+		
+		try {
+			Writer writer = new FileWriter("companies.json");
+			new Gson().toJson(cmp,writer);
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		
+		return done;
+	}
 	
 	
 }

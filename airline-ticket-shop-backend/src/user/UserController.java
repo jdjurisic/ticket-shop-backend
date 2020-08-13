@@ -10,6 +10,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -105,7 +106,8 @@ public class UserController {
 			try {
 			    Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(JwtKey.getInstance().getKey()).build().parseClaimsJws(jwt);
 			    String role = (String)claims.getBody().get("role");
-			    if(role.equals(UserRole.USER.toString())) {
+			    String usernameFromToken = (String)claims.getBody().get("user");
+			    if(role.equals(UserRole.USER.toString()) && usernameFromToken.equals(username) ) {
 			    	System.out.println(ticket.toString());
 					boolean success = userService.reserve(username,ticket);
 					System.out.println(success);
@@ -117,5 +119,54 @@ public class UserController {
     }
     	return Response.serverError().build();
     }
+    
+    @GET
+    @Path("/reservations/{username}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response reservedTicketsForUser(@Context HttpServletRequest request,@PathParam("username")String username) {
+    	String auth = request.getHeader("Authorization");
+		System.out.println("Authorization: " + auth);
+		if ((auth != null) && (auth.contains("Bearer "))) {
+			String jwt = auth.substring(auth.indexOf("Bearer ") + 7);
+			try {
+			    Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(JwtKey.getInstance().getKey()).build().parseClaimsJws(jwt);
+			    String role = (String)claims.getBody().get("role");
+			    if(role.equals(UserRole.USER.toString())) {
+			    	List<Booking> res = userService.getBookings(username);
+					if(res.size()>0)return Response.ok().build();
+			    }
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+			}
+    }
+    	return Response.serverError().build();
+    }
+    
+    @DELETE
+    @Path("/reservations/{username}/{bookingId}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteReservation(@Context HttpServletRequest request,@PathParam("username")String username,@PathParam("bookingId")int bookingId) {
+    	String auth = request.getHeader("Authorization");
+		System.out.println("Authorization: " + auth);
+		if ((auth != null) && (auth.contains("Bearer "))) {
+			String jwt = auth.substring(auth.indexOf("Bearer ") + 7);
+			try {
+			    Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(JwtKey.getInstance().getKey()).build().parseClaimsJws(jwt);
+			    String role = (String)claims.getBody().get("role");
+			    String usernameFromToken = (String)claims.getBody().get("user");
+			    if(role.equals(UserRole.USER.toString()) && usernameFromToken.equals(username)) {
+			    	boolean del = false;
+			    	del = userService.deleteReservation(username,bookingId);
+			    	if(del)return Response.ok().build();
+			    }
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+			}
+    }
+    	return Response.serverError().build();
+    }
 	
+    
 }

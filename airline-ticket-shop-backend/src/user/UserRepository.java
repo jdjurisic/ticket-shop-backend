@@ -8,6 +8,7 @@ import java.io.Reader;
 import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -167,6 +168,75 @@ public class UserRepository {
 		}
 		
 		return true;
+	}
+
+
+	public static List<Booking> getBookings(String username) {
+		List<UserEntity> users = null;
+		Gson gson = new Gson();
+		try {
+			Reader reader = Files.newBufferedReader(Paths.get("users.json"));
+			users = Arrays.asList(gson.fromJson(reader, UserEntity[].class));
+			reader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		UserEntity usr = null;
+		for(UserEntity ent : users) {
+			if(ent.getUsername().equals(username)) {
+				usr = ent;
+				break;
+			}
+		}
+		
+		return usr.getBookings();
+	}
+
+
+	public static boolean deleteReservation(String username, int bookingId) {
+		List<UserEntity> users = null;
+		Gson gson = new Gson();
+		boolean deleted = false;
+		
+		try {
+			Reader reader = new FileReader("users.json");
+			users = Arrays.asList(gson.fromJson(reader, UserEntity[].class));
+			reader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		Date now = new Date();
+		now.setDate(now.getDate()+1);
+		
+		List<UserEntity> newUsers = new ArrayList<UserEntity>(users);
+		for(UserEntity u:newUsers) {
+			if(u.getUsername().equals(username)) {
+				for(Booking b:u.getBookings()) {
+					if(b.getBookingId() == bookingId) {
+						if(now.before(b.getTicket().getDepartureDate())) {
+							u.getBookings().remove(b);
+							deleted = true;
+							break;
+						}
+
+					}
+				}
+			}
+		}
+
+		try {
+			Writer writer = new FileWriter("users.json");
+			new Gson().toJson(newUsers,writer);
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		
+		
+		return deleted;
 	}
 	
 }

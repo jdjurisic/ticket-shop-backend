@@ -15,4 +15,8 @@ public class CompaniesService {
 	public boolean editCompany(String oldName, String newname) {
 		return CompaniesRepository.editCompany(oldName,newname);
 	}
+
+	public boolean addCompany(String name) {
+		return CompaniesRepository.addCompany(name);
+	}
 }
