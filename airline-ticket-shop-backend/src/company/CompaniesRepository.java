@@ -125,6 +125,47 @@ public class CompaniesRepository {
 		
 		return suc;
 	}
+
+	public static boolean editCompany(String oldName, String newname) {
+		List<Company> cmp = null;
+		Gson gson = new Gson();
+		
+		try {
+			Reader reader = new FileReader("companies.json");
+			cmp = Arrays.asList(gson.fromJson(reader, Company[].class));
+			reader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		boolean done = false;
+		List<Company> newCmp = new ArrayList<Company>(cmp);
+		for(Company c:newCmp) {
+			if(c.getName().equals(oldName)) {
+				c.setName(newname);
+				done = true;
+			}
+		}
+		
+		try {
+			Writer writer = new FileWriter("companies.json");
+			new Gson().toJson(newCmp,writer);
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		//TODO change tickets and reservations
+		List<Ticket> tickets = FlightsRepository.getTickets();
+		List<Ticket> splice = new ArrayList<Ticket>(tickets);
+		for(Ticket t:splice) {
+			if(t.getCompany().equals(oldName)) {
+				t.setCompany(newname);
+				FlightsRepository.editTicket(t);
+			}
+		}
+		
+		return done;
+	}
 	
 	
 }

@@ -11,4 +11,8 @@ public class CompaniesService {
 		return CompaniesRepository.deleteCompany(name);
 		
 	}
+
+	public boolean editCompany(String oldName, String newname) {
+		return CompaniesRepository.editCompany(oldName,newname);
+	}
 }
