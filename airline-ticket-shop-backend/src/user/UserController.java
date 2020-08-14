@@ -124,7 +124,7 @@ public class UserController {
     @Path("/reservations/{username}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response reservedTicketsForUser(@Context HttpServletRequest request,@PathParam("username")String username) {
+    public List<Booking> reservedTicketsForUser(@Context HttpServletRequest request,@PathParam("username")String username) {
     	String auth = request.getHeader("Authorization");
 		System.out.println("Authorization: " + auth);
 		if ((auth != null) && (auth.contains("Bearer "))) {
@@ -134,13 +134,13 @@ public class UserController {
 			    String role = (String)claims.getBody().get("role");
 			    if(role.equals(UserRole.USER.toString())) {
 			    	List<Booking> res = userService.getBookings(username);
-					if(res.size()>0)return Response.ok().build();
+					if(res.size()>0)return res;
 			    }
 			} catch (Exception e) {
 				System.out.println(e.getMessage());
 			}
     }
-    	return Response.serverError().build();
+    	return null;
     }
     
     @DELETE

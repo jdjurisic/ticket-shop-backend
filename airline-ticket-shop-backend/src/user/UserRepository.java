@@ -190,6 +190,15 @@ public class UserRepository {
 			}
 		}
 		
+		Date now = new Date();
+		now.setDate(now.getDate()+1);
+		
+		for(Booking b:usr.getBookings()) {
+			if(now.after(b.getTicket().getDepartureDate())) {
+				b.setAvailable(false);
+			}
+		}
+		
 		return usr.getBookings();
 	}
 

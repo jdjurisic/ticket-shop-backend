@@ -72,7 +72,7 @@ public class CompaniesRepository {
 			e.printStackTrace();
 		}
 		
-
+		// TODO brisanje zeza
 		List<Ticket> tickets = FlightsRepository.getTickets();
 		List<Ticket> splice = new ArrayList<Ticket>(tickets);
 		for(Ticket t:splice) {
@@ -126,7 +126,7 @@ public class CompaniesRepository {
 		return suc;
 	}
 
-	public static boolean editCompany(String oldName, String newname) {
+	public static synchronized boolean editCompany(String oldName, String newname) {
 		List<Company> cmp = null;
 		Gson gson = new Gson();
 		
@@ -167,7 +167,7 @@ public class CompaniesRepository {
 		return done;
 	}
 
-	public static boolean addCompany(String name) {
+	public static synchronized boolean addCompany(String name) {
 		boolean done = false;
 		
 		List<Company> cmpLoaded = null;

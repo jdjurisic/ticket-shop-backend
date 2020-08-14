@@ -117,9 +117,14 @@ public class CompanyController {
 	}
 	
 	@POST
-	@Consumes(MediaType.TEXT_PLAIN)
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response addCompany(@Context HttpServletRequest request,String name) {
+	public boolean addCompany(@Context HttpServletRequest request,String newCompany) {
+		System.out.println(newCompany);
+		int last = newCompany.lastIndexOf('"');
+		int first = newCompany.lastIndexOf('"', last-1)+1;
+		String ime = newCompany.substring(first, last);
+		System.out.println(ime);
 		String auth = request.getHeader("Authorization");
 		System.out.println("Authorization: " + auth);
 		if ((auth != null) && (auth.contains("Bearer "))) {
@@ -129,14 +134,14 @@ public class CompanyController {
 			    String role = (String)claims.getBody().get("role");
 			    if(role.equals(UserRole.ADMIN.toString())) {
 			    	boolean succ = false;
-					succ = companiesService.addCompany(name);
-					if(succ) Response.ok().build();
+					succ = companiesService.addCompany(ime);
+					if(succ) return true;
 			    }
 			} catch (Exception e) {
 				System.out.println(e.getMessage());
 			}
 		}
-		return Response.serverError().build();
+		return false;
 	}
 	
 }
