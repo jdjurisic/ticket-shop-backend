@@ -305,11 +305,12 @@ public class FlightsRepository {
 		}
 		
 		int start = page*5;
-		if(start > tickets.size()-1)start = tickets.size()-1;
-		int end = start+5 > tickets.size()-1 ? tickets.size()-1:start+5;
-		
+		if(start > tickets.size()-1)start = tickets.size()-6;
+		int end = start+5 > tickets.size()-1 ? tickets.size():start+5;		
+//		System.out.println(start+"-"+end);
+//		System.out.println(tickets.size());
 		List<Ticket> ticketsForPage = tickets.subList(start, end);
-		if(start == end) ticketsForPage.add(tickets.get(start));
+		
 		
 		return ticketsForPage;
 	}

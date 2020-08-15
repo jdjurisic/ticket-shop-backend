@@ -123,9 +123,16 @@ public class FlightController {
 		List<Ticket> tickets = flightsService.getTickets();
 		List<Ticket> filtered = new ArrayList<Ticket>();
 		
+		Date departureDate = new Date(dep);
+		Date returnDate = new Date(ret);
+		System.out.println(origin+"-"+destination);
+		System.out.println(departureDate+" --- "+returnDate);
+		
 		if(destination != null && origin != null) {
 			for(Ticket t : tickets) {
-				if(t.getDestCity().equals(destination) && t.getDepCity().equals(origin))filtered.add(t);
+				if(t.getDestCity().equals(destination) && t.getDepCity().equals(origin)) {
+					filtered.add(t);
+				}
 			}
 		}else {
 			if(destination != null) {
@@ -140,31 +147,31 @@ public class FlightController {
 			}
 		}
 		
-		if(filtered.size()==0)filtered = new ArrayList<Ticket>(tickets);
-		Date departureDate = new Date(dep);
-		Date returnDate = new Date(ret);
-		System.out.println(origin+"-"+destination);
-		System.out.println(departureDate+" --- "+returnDate);
-		
 		if(dep == 0 && ret == 0)return filtered;
-		else if(dep > 0 && ret > 0) {
+		if(destination == null && origin == null)filtered = new ArrayList<Ticket>(tickets);
+
+		
+		if(dep > 0 && ret > 0) {
 			for(Ticket t : new ArrayList<Ticket>(filtered)) {
-				if(!t.isOneway())if(t.getDepartureDate().before(departureDate) || t.getReturnDate().after(returnDate))filtered.remove(t);
-				else if(t.isOneway()) {
-					if(t.getDepartureDate().before(departureDate))filtered.remove(t);
+				if(t.isOneway()) {
+					if(departureDate.after(t.getDepartureDate()))filtered.remove(t);
+				}else if(!t.isOneway()) {
+					if(t.getDepartureDate().before(departureDate) || t.getReturnDate().after(returnDate))filtered.remove(t);
 				}
 			}
+			return filtered;
 		}else if(dep > 0) {
 			for(Ticket t : new ArrayList<Ticket>(filtered)) {
 				if(t.getDepartureDate().before(departureDate))filtered.remove(t);
 			}
 		}else if(ret > 0) {
 			for(Ticket t : new ArrayList<Ticket>(filtered)) {
+				if(t.isOneway())continue;
 				if(t.getReturnDate().after(returnDate))filtered.remove(t);
 			}
 		}
-		
 		return filtered;
+
 	}
 	
 	@GET
