@@ -26,5 +26,9 @@ public class FlightsService {
 	public Ticket getTicketById(int fid,int ticketId) {
 		return FlightsRepository.getTicketById(fid,ticketId);
 	}
+
+	public List<Ticket> getTicketPage(int page) {
+		return FlightsRepository.getTicketPage(page);
+	}
 	
 }

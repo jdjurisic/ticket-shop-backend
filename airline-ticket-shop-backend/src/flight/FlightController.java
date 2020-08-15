@@ -25,6 +25,8 @@ import app.JwtKey;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
+import pagination.PageInfo;
+import pagination.PaginationResponse;
 import user.UserRole;
 
 @Path("/flights")
@@ -163,6 +165,23 @@ public class FlightController {
 		}
 		
 		return filtered;
+	}
+	
+	@GET
+	@Path("/ticketpage")
+	@Produces(MediaType.APPLICATION_JSON)
+	public PaginationResponse getTickets(@QueryParam("page")int page) {
+		PageInfo pageInfo = new PageInfo(page,5);
+		List<Ticket> tickets = flightsService.getTicketPage(page);
+		return new PaginationResponse(pageInfo,tickets);
+	}
+	
+	@GET
+	@Path("/maxticketpage")
+	@Produces(MediaType.APPLICATION_JSON)
+	public int maxTicketPage() {
+		List<Ticket> tickets = flightsService.getTickets();
+		return tickets.size()/5;
 	}
 	
 	

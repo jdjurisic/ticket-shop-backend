@@ -274,4 +274,44 @@ public class FlightsRepository {
 		return t;
 	}
 
+	public static List<Ticket> getTicketPage(int page) {
+		List<Flight> flg = null;
+		Gson gson = new Gson();
+		
+		Reader reader;
+		try {
+			reader = new FileReader("flights.json");
+			flg = Arrays.asList(gson.fromJson(reader, Flight[].class));
+			reader.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		ArrayList<Ticket> tickets = new ArrayList<>();
+		for(Flight f : flg) {
+			if(f.getTickets() != null) {
+				for(Ticket t : f.getTickets()) {
+					if(t.getCount() != 0) {
+						t.setDepCity(f.getOrigin());
+						t.setDestCity(f.getDestination());
+						tickets.add(t);
+					}
+
+				}
+			}
+
+		}
+		
+		int start = page*5;
+		if(start > tickets.size()-1)start = tickets.size()-1;
+		int end = start+5 > tickets.size()-1 ? tickets.size()-1:start+5;
+		
+		List<Ticket> ticketsForPage = tickets.subList(start, end);
+		if(start == end) ticketsForPage.add(tickets.get(start));
+		
+		return ticketsForPage;
+	}
+
 }
