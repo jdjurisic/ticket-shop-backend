@@ -94,9 +94,15 @@ public class CompanyController {
 	
 	@PUT
 	@Path("/{oldName}")
-	@Consumes(MediaType.TEXT_PLAIN)
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response editCompany(@Context HttpServletRequest request,@PathParam("oldName")String oldName,String newname) {
+	public Response editCompany(@Context HttpServletRequest request,@PathParam("oldName")String oldName,String newCompany) {
+		
+		System.out.println(newCompany);
+		int last = newCompany.lastIndexOf('"');
+		int first = newCompany.lastIndexOf('"', last-1)+1;
+		String ime = newCompany.substring(first, last);
+		
 		String auth = request.getHeader("Authorization");
 		System.out.println("Authorization: " + auth);
 		if ((auth != null) && (auth.contains("Bearer "))) {
@@ -106,7 +112,7 @@ public class CompanyController {
 			    String role = (String)claims.getBody().get("role");
 			    if(role.equals(UserRole.ADMIN.toString())) {
 					boolean succ = false;
-					succ = companiesService.editCompany(oldName,newname);
+					succ = companiesService.editCompany(oldName,ime);
 					if(succ)return Response.ok().build();
 			    }
 			} catch (Exception e) {

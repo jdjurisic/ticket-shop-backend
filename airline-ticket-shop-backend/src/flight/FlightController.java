@@ -1,5 +1,7 @@
 package flight;
 
+import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,6 +15,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -109,6 +112,58 @@ public class FlightController {
 		return flightsService.getTicketById(fid,ticketId);
 	}
 	
+	@GET
+	@Path("/query")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<Ticket> searchTickets(@QueryParam("destination")String destination,
+			@QueryParam("origin")String origin,@QueryParam("depDate")long dep,@QueryParam("retDate")long ret){
+		
+		List<Ticket> tickets = flightsService.getTickets();
+		List<Ticket> filtered = new ArrayList<Ticket>();
+		
+		if(destination != null && origin != null) {
+			for(Ticket t : tickets) {
+				if(t.getDestCity().equals(destination) && t.getDepCity().equals(origin))filtered.add(t);
+			}
+		}else {
+			if(destination != null) {
+				for(Ticket t : tickets) {
+				if(t.getDestCity().equals(destination))filtered.add(t);
+										}
+									}
+			if(origin != null) {
+				for(Ticket t : tickets) {
+					if(t.getDepCity().equals(origin))filtered.add(t);
+				}
+			}
+		}
+		
+		if(filtered.size()==0)filtered = new ArrayList<Ticket>(tickets);
+		Date departureDate = new Date(dep);
+		Date returnDate = new Date(ret);
+		System.out.println(origin+"-"+destination);
+		System.out.println(departureDate+" --- "+returnDate);
+		
+		if(dep == 0 && ret == 0)return filtered;
+		else if(dep > 0 && ret > 0) {
+			for(Ticket t : new ArrayList<Ticket>(filtered)) {
+				if(!t.isOneway())if(t.getDepartureDate().before(departureDate) || t.getReturnDate().after(returnDate))filtered.remove(t);
+				else if(t.isOneway()) {
+					if(t.getDepartureDate().before(departureDate))filtered.remove(t);
+				}
+			}
+		}else if(dep > 0) {
+			for(Ticket t : new ArrayList<Ticket>(filtered)) {
+				if(t.getDepartureDate().before(departureDate))filtered.remove(t);
+			}
+		}else if(ret > 0) {
+			for(Ticket t : new ArrayList<Ticket>(filtered)) {
+				if(t.getReturnDate().after(returnDate))filtered.remove(t);
+			}
+		}
+		
+		return filtered;
+	}
 	
 	
 }
